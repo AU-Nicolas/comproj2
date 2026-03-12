@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Automated Light Guide{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  </head>
+  <body>
+    <div class="frame">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-title">Automated<br />Light Guide</div>
+        </div>
+
+        <nav class="nav">
+          <a class="nav-item {% if active_page == 'dashboard' %}is-active{% endif %}" href="{{ url_for('dashboard') }}">
+            <span class="nav-icon" aria-hidden="true">
+              <!-- clipboard -->
+              <svg viewBox="0 0 24 24" width="34" height="34">
+                <path d="M9 3h6a2 2 0 0 1 2 2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2a2 2 0 0 1 2-2Zm0 2a1 1 0 0 0-1 1v1h8V6a1 1 0 0 0-1-1H9Zm-4 4v12h16V9H5Z" />
+              </svg>
+            </span>
+            <span class="nav-text">Dashboard</span>
+          </a>
+
+          <a class="nav-item {% if active_page == 'live' %}is-active{% endif %}" href="{{ url_for('live_status') }}">
+            <span class="nav-icon" aria-hidden="true">
+              <!-- green status dot -->
+              <span class="status-dot"></span>
+            </span>
+            <span class="nav-text">Live Status</span>
+          </a>
+
+          <a class="nav-item {% if active_page == 'history' %}is-active{% endif %}" href="{{ url_for('visit_history') }}">
+            <span class="nav-icon" aria-hidden="true">
+              <!-- hourglass -->
+              <svg viewBox="0 0 24 24" width="34" height="34">
+                <path d="M6 2h12v2h-1v3.2a6 6 0 0 1-2.2 4.7L13.4 13l1.4 1.1A6 6 0 0 1 17 18.8V22h1v2H6v-2h1v-3.2a6 6 0 0 1 2.2-4.7L10.6 13 9.2 11.9A6 6 0 0 1 7 7.2V4H6V2Zm3 2v3.2a4 4 0 0 0 1.5 3.1L12 11.6l1.5-1.3A4 4 0 0 0 15 7.2V4H9Zm6 18v-3.2a4 4 0 0 0-1.5-3.1L12 14.4l-1.5 1.3A4 4 0 0 0 9 18.8V22h6Z" />
+              </svg>
+            </span>
+            <span class="nav-text">Visit History</span>
+          </a>
+
+          <a class="nav-item {% if active_page == 'sensors' %}is-active{% endif %}" href="{{ url_for('sensors') }}">
+            <span class="nav-icon" aria-hidden="true">
+              <!-- sensor waves -->
+              <svg viewBox="0 0 24 24" width="34" height="34">
+                <path d="M12 5a7 7 0 0 1 7 7h-2a5 5 0 1 0-10 0H5a7 7 0 0 1 7-7Zm0 4a3 3 0 0 1 3 3h-2a1 1 0 1 0-2 0H9a3 3 0 0 1 3-3Zm-9 8h18v2H3v-2Zm4 3h10v2H7v-2Z" />
+              </svg>
+            </span>
+            <span class="nav-text">Sensors</span>
+          </a>
+
+          <a class="nav-item {% if active_page == 'settings' %}is-active{% endif %}" href="{{ url_for('settings') }}">
+            <span class="nav-icon" aria-hidden="true">
+              <!-- gear -->
+              <svg viewBox="0 0 24 24" width="34" height="34">
+                <path d="M19.4 13a7.7 7.7 0 0 0 .1-1 7.7 7.7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7.6 7.6 0 0 0-1.7-1L15 2h-4l-.3 2.5a7.6 7.6 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.5a7.7 7.7 0 0 0-.1 1 7.7 7.7 0 0 0 .1 1l-2 1.5 2 3.5 2.4-1a7.6 7.6 0 0 0 1.7 1L11 22h4l.3-2.5a7.6 7.6 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5ZM13.8 12A1.8 1.8 0 1 1 12 10.2 1.8 1.8 0 0 1 13.8 12Z" />
+              </svg>
+            </span>
+            <span class="nav-text">Settings</span>
+          </a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <form class="search" method="get" action="{{ url_for('search') }}">
+            <span class="search-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22">
+                <path d="M10 2a8 8 0 1 1 5.3 14l4.2 4.2-1.4 1.4-4.2-4.2A8 8 0 0 1 10 2Zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z" />
+              </svg>
+            </span>
+            <input
+              class="search-input"
+              type="search"
+              name="q"
+              placeholder="Search Events..."
+              value="{{ search_query|default('', true) }}"
+            />
+          </form>
+        </header>
+
+        <section class="content">
+          {% block content %}{% endblock %}
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
