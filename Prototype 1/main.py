@@ -1,0 +1,73 @@
+from importer import*
+from game_loop import*
+from Data.light_writer import*
+from Data.sensor_reader import*
+from Business.toilet import*
+from Business.bed import*
+from Business.zone import*
+from Business.controller import*
+
+# Importing data
+importer = Importer()
+importer.importData("game_map.json")
+
+# Creating an instance of the game
+game = GameLoop()
+
+# Giving the walls to the game
+game.walls = importer.walls
+
+# Creating the controller
+controller = Controller()
+
+# Extracting and setting up the bed
+bed_zone = importer.zones[1]
+game.sensors.append(bed_zone.sensor)
+game.lights.extend(bed_zone.lights)
+
+lightWriter = LightWriter(bed_zone.lights)
+sensorReader = SensorReader(bed_zone.sensor)
+bed = Bed(sensorReader, lightWriter, controller)
+
+prevZone = bed
+controller.zones.append(bed)
+
+# Iterating over all normal zones
+index = 2
+while index+1 in importer.zones:
+    # Retriving the current zone
+    zone = importer.zones[index]
+    
+    # Adding game objects to the game
+    game.sensors.append(zone.sensor)
+    game.lights.extend(zone.lights)
+
+    # Setting up data layer
+    lightWriter = LightWriter(zone.lights)
+    sensorReader = SensorReader(zone.sensor)
+
+    # Setting up business layer
+    zone = Zone(sensorReader, lightWriter, controller)
+    zone.prevZone = prevZone
+    prevZone.nextZone = zone
+    controller.zones.append(zone)
+    prevZone = zone
+
+    index += 1
+
+bed.prevZone = bed.nextZone
+
+# Setting up the toilet
+toilet_zone = importer.zones[index]
+
+game.sensors.append(toilet_zone.sensor)
+game.lights.extend(toilet_zone.lights)
+
+lightWriter = LightWriter(toilet_zone.lights)
+sensorReader = SensorReader(toilet_zone.sensor)
+toilet = Toilet(sensorReader, lightWriter, controller, prevZone, prevZone)
+prevZone.nextZone = toilet
+controller.zones.append(toilet)
+bed.SetActive()
+game.run()
+
