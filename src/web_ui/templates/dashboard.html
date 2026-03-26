@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% set active_page = "dashboard" %}
+
+{% block title %}Dashboard - Automated Light Guide{% endblock %}
+
+{% block content %}
+  <div class="dashboard">
+    <div class="card card-systemstatus">
+      <div class="card-title">Systemstatus</div>
+      <div class="card-body">
+        <div class="kv">
+          <div class="k">System aktivt..</div>
+        </div>
+        <div class="kv">
+          <div class="k">Nattillstand:</div>
+          <div class="v">ON</div>
+        </div>
+        <div class="kv">
+          <div class="k">Seneste opdatering:</div>
+          <div class="v">23:42:00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-aktivzone">
+      <div class="card-title">Aktiv zone</div>
+      <div class="card-body">
+        <div class="kv">
+          <div class="k">Nuværende registrering:</div>
+          <div class="v">Zone 3</div>
+        </div>
+        <div class="kv">
+          <div class="k">Lysstatus:</div>
+          <div class="v">Tændt</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-toiletbesog">
+      <div class="card-title">Seneste toiletbesøg</div>
+      <div class="card-body">
+        <div class="kv">
+          <div class="k">Start:</div>
+          <div class="v">23:57:06</div>
+        </div>
+        <div class="kv">
+          <div class="k">Toilet næt:</div>
+          <div class="v">23:58:02</div>
+        </div>
+        <div class="kv">
+          <div class="k">Retur:</div>
+          <div class="v">23:59:51</div>
+        </div>
+        <div class="kv">
+          <div class="k">Slut:</div>
+          <div class="v">23:59:59</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-zoner">
+      <div class="card-title">Zoner</div>
+      <div class="card-body zonelist">
+        <div>Zone 1 - Seng</div>
+        <div>Zone 2 - Gang</div>
+        <div>Zone 3 - Aktiv</div>
+        <div>Zone 4 - Toilet</div>
+        <div>Zone 5 - Returvej</div>
+      </div>
+    </div>
+
+    <div class="card card-historik">
+      <div class="card-title">Seneste Historik</div>
+      <div class="card-body historylist">
+        <div>23:52:00 - Bevægelse registreret i Zone 1</div>
+        <div>23:54:00 Bevægelse registreret i Zone 2</div>
+        <div>23:56:00 - Besøg afsluttet</div>
+      </div>
+    </div>
+
+    <div class="bottom-strip">
+      <div class="bottom-left">Fejl og beskeder</div>
+      <div class="bottom-right">Ingen kritiske fejl, alle sensorer svarer normalt...</div>
+    </div>
+  </div>
+{% endblock %}
