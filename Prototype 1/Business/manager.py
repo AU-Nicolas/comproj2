@@ -1,7 +1,7 @@
 from Enums.direction import*
 from Enums.toggle import*
 
-class Controller:
+class Manager:
     def __init__(self, zones = []):
         self.zones = zones
         self.direction = Direction.TOILET
