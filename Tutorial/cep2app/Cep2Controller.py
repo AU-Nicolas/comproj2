@@ -99,6 +99,7 @@ class Cep2Controller:
                     my_thread_id = self.cur_thread_id
                     sleep(4)
                     if(my_thread_id == self.cur_thread_id):
+                        print("Why on God's green earth do I run???")
                         self.occupied = False
                         client = Cep2WebClient(self.IP_HOST)
                         client.send_event(False)
