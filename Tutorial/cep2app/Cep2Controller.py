@@ -9,6 +9,7 @@ class Cep2Controller:
     MQTT_BROKER_HOST = "localhost"
     MQTT_BROKER_PORT = 1883
     cur_thread_id = 0
+    occupied = False
 
     """ The controller is responsible for managing events received from zigbee2mqtt and handle them.
     By handle them it can be process, store and communicate with other parts of the system. In this
@@ -78,16 +79,18 @@ class Cep2Controller:
             else:
                 new_state = "ON" if occupancy else "OFF"
                 
-                # Register event in the remote web server.
-                web_event = Cep2WebDeviceEvent(device_id=device.id_,
-                                               device_type=device.type_,
-                                               measurement=occupancy)
+                
 
-                client = Cep2WebClient(self.IP_HOST)
-                client.send_event(occupancy)
+                
 
                 
                 if new_state == "ON":
+                    if(not self.occupied):
+                        client = Cep2WebClient(self.IP_HOST)
+                        client.send_event(True)
+
+                    self.occupied = True
+
                     # Change the state on all actuators, i.e. LEDs and power plugs.
                     for a in self.__devices_model.actuators_list:
                         self.__z2m_client.change_state(a.id_, new_state)
@@ -96,7 +99,11 @@ class Cep2Controller:
                     my_thread_id = self.cur_thread_id
                     sleep(4)
                     if(my_thread_id == self.cur_thread_id):
-                        for a in self.__devices_model.actuators_list:
+                        self.occupied = False
+                        client = Cep2WebClient(self.IP_HOST)
+                        client.send_event(False)
+                        # Turns off all lights - not ideal
+                        for a in self.__devices_model.actuators_list:    
                             self.__z2m_client.change_state(a.id_, new_state)
                     
                 """

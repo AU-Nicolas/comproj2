@@ -32,5 +32,5 @@ class Cep2WebClient:
 
 
     def send_event(self, event):
-        self.client.publish("test", f"Sensor is occupied: {event}")
+        self.client.publish("occupied", f"Zone is occupied: {event}")
         
