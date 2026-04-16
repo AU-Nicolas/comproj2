@@ -5,7 +5,7 @@ from Data.sensor_reader import*
 from Business.toilet import*
 from Business.bed import*
 from Business.zone import*
-from Business.controller import*
+from Business.manager import Manager
 
 # Importing data
 importer = Importer()
@@ -18,7 +18,7 @@ game = GameLoop()
 game.walls = importer.walls
 
 # Creating the controller
-controller = Controller()
+manager = Manager()
 
 # Extracting and setting up the bed
 bed_zone = importer.zones[1]
@@ -27,10 +27,10 @@ game.lights.extend(bed_zone.lights)
 
 lightWriter = LightWriter(bed_zone.lights)
 sensorReader = SensorReader(bed_zone.sensor)
-bed = Bed(sensorReader, lightWriter, controller)
+bed = Bed(sensorReader, lightWriter, manager)
 
 prevZone = bed
-controller.zones.append(bed)
+manager.zones.append(bed)
 
 # Iterating over all normal zones
 index = 2
@@ -47,10 +47,10 @@ while index+1 in importer.zones:
     sensorReader = SensorReader(zone.sensor)
 
     # Setting up business layer
-    zone = Zone(sensorReader, lightWriter, controller)
+    zone = Zone(sensorReader, lightWriter, manager)
     zone.prevZone = prevZone
     prevZone.nextZone = zone
-    controller.zones.append(zone)
+    manager.zones.append(zone)
     prevZone = zone
 
     index += 1
@@ -65,9 +65,9 @@ game.lights.extend(toilet_zone.lights)
 
 lightWriter = LightWriter(toilet_zone.lights)
 sensorReader = SensorReader(toilet_zone.sensor)
-toilet = Toilet(sensorReader, lightWriter, controller, prevZone, prevZone)
+toilet = Toilet(sensorReader, lightWriter, manager, prevZone, prevZone)
 prevZone.nextZone = toilet
-controller.zones.append(toilet)
+manager.zones.append(toilet)
 bed.SetActive()
 game.run()
 
