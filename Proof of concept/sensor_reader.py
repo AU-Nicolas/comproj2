@@ -5,7 +5,7 @@ import json
 
 class SensorReader:
     def __init__(self, device_id, dormantTime = 4):
-        self.cur_thread_id = 0
+        self.cur_message_id = 0
         self.occupied = False
         self.dormantTime = dormantTime
         print("I am created!")
@@ -23,29 +23,26 @@ class SensorReader:
             occupancy = payload["occupancy"]
         except (KeyError, json.JSONDecodeError):
             return
-        print(occupancy)
+        self.cur_message_id += 1
         # If the sensor detects motion, we set occupied to true
         if(occupancy):
+            print("I set to true")
             self.occupied = True
         # If a false reading is detected we start a set false thread
         else:
-            print("I SHOULD start the thread now")
             thread = threading.Thread(
                 target = self.setFalse,
                 daemon = True
             )
-            thread.start
+            thread.start()
             
     # Will wait for timeDormant time. If no new thread has been started,
     # occupied will be set to false
     def setFalse(self):
-        print("I am called!")
-        self.cur_thread_id += 1
-        my_thread_id = self.cur_thread_id
+        my_message_id = self.cur_message_id
         sleep(self.dormantTime)
-        print("I am done snoozing")
-        if(my_thread_id == self.cur_thread_id):
-            print("I set to false!")
+        if(my_message_id == self.cur_message_id):
+            print("I set to false")
             self.occupied = False
 
 

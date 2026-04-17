@@ -46,7 +46,7 @@ class Bed(Zone):
             target = self.CheckBed,
             daemon = True
         )
-        thread.start
+        thread.start()
         
     # Check if a person is in the bed zone, using isOccupied from sensors
     def CheckBed(self):
