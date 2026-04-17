@@ -1,38 +1,52 @@
 import paho.mqtt.client as mqtt
 from time import sleep
+import threading
+import json
 
 class SensorReader:
     def __init__(self, device_id, dormantTime = 4):
-        self.cur_message_id = 0
+        self.cur_thread_id = 0
         self.occupied = False
         self.dormantTime = dormantTime
-
+        print("I am created!")
         # Setting up the client
         self.client = mqtt.Client()
-        self.client.subscribe(f"zigbee2mqtt/{device_id}")
         self.client.on_message = self.onMessage
         self.client.connect("localhost", 1883, 60)
-        self.client.loop_forever()
+        self.client.subscribe(f"zigbee2mqtt/{device_id}")
+        self.client.loop_start()
 
     def onMessage(self, client, userdata, message):
         # Checking if message has property occupancy
         try:
-            occupancy = message.event["occupancy"]
-        except KeyError:
-            pass
+            payload = json.loads(message.payload.decode())
+            occupancy = payload["occupancy"]
+        except (KeyError, json.JSONDecodeError):
+            return
+        print(occupancy)
+        # If the sensor detects motion, we set occupied to true
+        if(occupancy):
+            self.occupied = True
+        # If a false reading is detected we start a set false thread
         else:
-            # If the sensor detects motion, we set occupied to true
-            if(occupancy):
-                self.occupied = True
-            # If a false reading is detected we wait for dormantTime seconds.
-            # If no new reading is produced, we set occupied to false
-            else:
-                self.cur_message_id += 1
-                my_message_id = self.cur_message_id
-                sleep(self.dormantTime)
-                if(my_message_id == self.cur_message_id):
-                    self.occupied = False
-
+            print("I SHOULD start the thread now")
+            thread = threading.Thread(
+                target = self.setFalse,
+                daemon = True
+            )
+            thread.start
+            
+    # Will wait for timeDormant time. If no new thread has been started,
+    # occupied will be set to false
+    def setFalse(self):
+        print("I am called!")
+        self.cur_thread_id += 1
+        my_thread_id = self.cur_thread_id
+        sleep(self.dormantTime)
+        print("I am done snoozing")
+        if(my_thread_id == self.cur_thread_id):
+            print("I set to false!")
+            self.occupied = False
 
 
     def isOccupied(self):
