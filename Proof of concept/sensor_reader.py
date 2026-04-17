@@ -8,13 +8,17 @@ class SensorReader:
         self.cur_message_id = 0
         self.occupied = False
         self.dormantTime = dormantTime
+        self.device_id = device_id
+        
         # Setting up the client
         self.client = mqtt.Client()
         self.client.on_message = self.onMessage
+        self.client.on_connect = self.onConnect
         self.client.connect("localhost", 1883, 60)
-        self.client.subscribe(f"zigbee2mqtt/{device_id}")
+        
         self.client.loop_start()
 
+    # When a message is received
     def onMessage(self, client, userdata, message):
         # Checking if message has property occupancy
         try:
@@ -33,6 +37,10 @@ class SensorReader:
                 daemon = True
             )
             thread.start()
+    
+    # When connecting to the mqtt broker
+    def onConnect(self, client, userdata, flags, rc):
+        client.subscribe(f"zigbee2mqtt/{self.device_id}")
             
     # Will wait for timeDormant time. If no new thread has been started,
     # occupied will be set to false
