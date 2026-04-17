@@ -8,7 +8,6 @@ class SensorReader:
         self.cur_message_id = 0
         self.occupied = False
         self.dormantTime = dormantTime
-        print("I am created!")
         # Setting up the client
         self.client = mqtt.Client()
         self.client.on_message = self.onMessage
@@ -26,7 +25,6 @@ class SensorReader:
         self.cur_message_id += 1
         # If the sensor detects motion, we set occupied to true
         if(occupancy):
-            print("I set to true")
             self.occupied = True
         # If a false reading is detected we start a set false thread
         else:
@@ -42,7 +40,6 @@ class SensorReader:
         my_message_id = self.cur_message_id
         sleep(self.dormantTime)
         if(my_message_id == self.cur_message_id):
-            print("I set to false")
             self.occupied = False
 
 
