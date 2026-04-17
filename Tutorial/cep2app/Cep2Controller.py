@@ -51,8 +51,7 @@ class Cep2Controller:
         if not message:
             return
 
-        print(
-            f"zigbee2mqtt event received on topic {message.topic}: {message.data}")
+        print("I got a message")
 
         # If the message is not a device event, then don't do anything.
         if message.type_ != Cep2Zigbee2mqttMessageType.DEVICE_EVENT:
@@ -82,9 +81,12 @@ class Cep2Controller:
                 
 
                 
-
+                self.cur_thread_id += 1
+                my_thread_id = self.cur_thread_id
+                print(my_thread_id)
                 
                 if new_state == "ON":
+                    print("I see true")
                     if(not self.occupied):
                         client = Cep2WebClient(self.IP_HOST)
                         client.send_event(True)
@@ -95,9 +97,8 @@ class Cep2Controller:
                     for a in self.__devices_model.actuators_list:
                         self.__z2m_client.change_state(a.id_, new_state)
                 else:
-                    self.cur_thread_id += 1
-                    my_thread_id = self.cur_thread_id
-                    sleep(4)
+                    print("I see false")
+                    sleep(8)
                     if(my_thread_id == self.cur_thread_id):
                         print("Why on God's green earth do I run???")
                         self.occupied = False
