@@ -20,12 +20,14 @@ occupied = False
 while(True):
     if(sensor1.isOccupied()):
         if not occupied:
-            client.publish("Sensor is occupied")
+            client.publish(topic, "Sensor is occupied")
+            print("I should publish occupied!")
         occupied = True
         light1.setLight("ON")
     else:
         if occupied:
-            client.publish("Sensor is not occupied")
+            client.publish(topic, "Sensor is not occupied")
+            print("I should publish not occupied!")
         occupied = False
         light1.setLight("OFF")
 
