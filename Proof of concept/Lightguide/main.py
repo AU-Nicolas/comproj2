@@ -2,6 +2,8 @@ from light_writer import*
 from sensor_reader import*
 from time import sleep
 import paho.mqtt.client as mqtt
+import json
+from datetime import datetime
 
 
 ip = "10.178.157.211"
@@ -13,20 +15,25 @@ light1 = LightWriter("light_1")
 # Creating mqtt publisher
 client = mqtt.Client()
 client.connect(ip, 1883, 60)
-topic = "occupied"
+topic = "occupancy"
 
 occupied = False
+
+def publish_data(occupancy):
+    data = {"occupied":occupancy, "time":datetime.now()}
+    json_data = json.dumps(data)
+    client.publish(topic, json_data)
 
 while(True):
     if(sensor1.isOccupied()):
         if not occupied:
-            client.publish(topic, "Sensor is occupied")
+            publish_data(True)
             print("I should publish occupied!")
         occupied = True
         light1.setLight("ON")
     else:
         if occupied:
-            client.publish(topic, "Sensor is not occupied")
+            publish_data(False)
             print("I should publish not occupied!")
         occupied = False
         light1.setLight("OFF")
