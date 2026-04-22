@@ -20,7 +20,9 @@ topic = "occupancy"
 occupied = False
 
 def publish_data(occupancy):
-    data = {"occupied":occupancy, "time":datetime.now()}
+    time = datetime.now()
+    time_str = time.strftime("%Y-%m-%d %H:%M:%S")
+    data = {"occupied":occupancy, "time":time_str}
     json_data = json.dumps(data)
     client.publish(topic, json_data)
 

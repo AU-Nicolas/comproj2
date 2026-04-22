@@ -20,6 +20,7 @@ class SensorReader:
 
     # When a message is received
     def onMessage(self, client, userdata, message):
+        print("The sensor sees a message")
         # Checking if message has property occupancy
         try:
             payload = json.loads(message.payload.decode())
