@@ -31,10 +31,12 @@ class Bed(Zone):
                     break
                 else:
                     if time.time() - self.start_time > self.dormant_time:
+                        # TO-DO: NOTIFY LOGGING SERVICE ABOUT END TIME
                         self.ToggleLight(self.ToggleLight(Toggle.OFF))
                         self.nextZone.ToggleLight(Toggle.OFF)
                     time.sleep(1)
             else:
+                # TO-DO: IF WAS DORMANT: NOTIFY LOGGING SERVICE ABOUT STARTTIME
                 self.start_time = time.time()
                 self.ToggleLight(Toggle.ON)
                 self.nextZone.ToggleLight(Toggle.ON)

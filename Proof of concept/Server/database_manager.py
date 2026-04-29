@@ -56,6 +56,7 @@ class DatabaseManager:
                  )""")
     
     def writeToDatabase(self, occupied, timestamp):
+        print("I Write into the database")
         sql = f"INSERT INTO {self.table} (occupied, time) VALUES (%s, %s)"
         self.db.cursor().execute(sql, (occupied, timestamp))
         self.db.commit()

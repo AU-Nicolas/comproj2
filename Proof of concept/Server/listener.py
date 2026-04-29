@@ -36,6 +36,7 @@ class Listener:
         time = datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
 
         # Writing to the database
+        print("I ask the manager to write to the database")
         self.dbManager.writeToDatabase(occupancy, time)
         
     
