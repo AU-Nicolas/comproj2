@@ -15,6 +15,7 @@ light1 = LightWriter("light_1")
 # Creating mqtt publisher
 client = mqtt.Client()
 client.connect(ip, 1883, 60)
+client.loop_start()
 topic = "occupancy"
 
 occupied = False

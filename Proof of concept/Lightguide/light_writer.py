@@ -11,6 +11,7 @@ class LightWriter:
         self.lightStatus = "ON"
         # Setting the light to off initially
         self.setLight("OFF")
+        self.client.loop_start()
 
 
     def setLight(self, value):
