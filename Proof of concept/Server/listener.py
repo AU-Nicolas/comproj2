@@ -18,7 +18,6 @@ class Listener:
         self.client.on_message = self.onMessage
         self.client.on_connect = self.onConnect
         self.client.connect(ip, 1883, 60)
-        self.client.loop_start()
 
     # When a message is received
     def onMessage(self, client, userdata, message):
