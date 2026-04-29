@@ -6,7 +6,7 @@ from datetime import datetime
 
 class Listener:
     def __init__(self, dbManager,
-                 ip = "10.178.157.211", 
+                 ip = "10.73.247.211", 
                  topic = "occupancy"):
         # Databasemanager we write to
         self.dbManager = dbManager
