@@ -22,16 +22,14 @@ class Bed(Zone):
     def CheckIfActive(self):
         while (True):
             if (not self.IsOccupied()):
-                # If the resident has moved to the next zone
+                
                 if (self.nextZone.IsOccupied()):
                     self.ToggleLight(Toggle.OFF)
                     self.manager.inBed = False
                     self.StartCheckBed()
                     self.nextZone.SetActive()
                     break
-                # If the resident is nowhere to be seen
                 else:
-                    # If enough time has passed, all light switches off
                     if time.time() - self.start_time > self.dormant_time:
                         # TO-DO: NOTIFY LOGGING SERVICE ABOUT END TIME
                         self.ToggleLight(self.ToggleLight(Toggle.OFF))
