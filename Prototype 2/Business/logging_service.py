@@ -34,57 +34,87 @@ class LoggingService:
                 "on_toilet": (0,0),
                 "to_bed": (0,0)}
         
-        toilet_events = []
-        startTime, endTime = None
+        starttime, endtime = None
+        
+        if (self.events[0].type == Event.EXIT_BED):
+            starttime = self.events[0].time
+            data["start"] = starttime.strftime("%Y-%m-%d %H:%M:%S")
+            del self.events[0]
+        else:
+            self.events = []
+            print("Error: First event is not EXIT_BED")
+            return
+        
+        if (self.events[-1].type == Event.ENTER_BED):
+            endtime = self.events[-1].time
+            delta = (endtime - starttime).seconds
+            data["total_time"] = self.ConvertTime(delta)
+            del self.events[-1]
+        else:
+            self.events = []
+            print("Error: Last event is not ENTER_BED")
+            return
+    
+        if (len(self.events) == 0):
+            self.SendData(data)
+            return
+        
+        if (self.events[0].type == Event.ENTER_TOILET):
+            delta = (self.events[0].time - starttime).seconds
+            data["to_toilet"] = self.ConvertTime(delta)
+        else:
+            self.SendData(data)
+            print("Error: weird toilet behavior - missing entry")
+            return
+        
+        if (self.events[-1].type == Event.EXIT_TOILET):
+            delta = (endtime - self.events[-1].time).seconds
+            data["to_bed"] = self.ConvertTime(delta)
+        else:
+            self.SendData(data)
+            print("Error: weird toilet behavior - missing exit")
+            return
+        
+        if (len(self.events) % 2 != 0):
+            self.SendData(data)
+            return
+        
+        expected_event = Event.ENTER_TOILET
+        on_toilet = 0
+        enter_time = None
 
         for event in self.events:
-            if event.type == Event.EXIT_BED:
-                # Checking that we only are exiting the bed in the beginning of the events
-                if event.time != self.events[0].time:
-                    print("Unexpected placement of exit bed event")
-                    break
-                # Registering the beginning of the actions
-                startTime = event.time
+            if (expected_event != event.type):
+                self.SendData(data)
+                return
             
-            elif event.type == Event.ENTER_BED:
-                # Checking that this is the last stored event
-                if event.time != self.events[-1].time:
-                    print("Unexpected placement of enter bed event")
-                    break
-                # Registering the end of the actions
-                endTime = event.time
-
-            else:
-                toilet_events.append(event)
+            if (event.type == Event.ENTER_TOILET):
+                expected_event = Event.EXIT_TOILET
+                enter_time = event.time
             
-        tot_toilet_time = (0,0)
-        # Checking that there is an even amount of toilet events (as expected)
-        if len(toilet_events % 2 == 0):
-            expected_event_type = Event.ENTER_TOILET
-            # Looping through all toilet events to calculate accumulated toilet time
-            last_time = (0,0)
-            for event in toilet_events:
-                if(event.type != expected_event_type):
-                    tot_toilet_time = (0,0)
-                    print("Unexpected placement of toilet event")
-                    break
-                if last_time == (0,0):
-                    last_time = (event.time.minute, event.time.second)
-                else:
-                    
+            elif (event.type == Event.EXIT_TOILET):
+                expected_event = Event.ENTER_TOILET
+                on_toilet += (event.time - enter_time).seconds
+            
 
+        data["on_toilet"] = self.ConvertTime(on_toilet)
+        data["completed"] = True
+        self.SendData(data)
+        
 
-                
-
-
-
-        data["start"] = startTime.strftime("%Y-%m-%d %H:%M:%S")
-                
-                
-
+    def ConvertTime(self, time_seconds):
+        minutes = time_seconds // 60
+        seconds = time_seconds % 60
+        return (minutes, seconds)
+    
+    def SendData(self, data):
+        if (data["completed"] == False):
+            data["on_toilet"], data["to_toilet"], data["to_bed"] = (0,0)
+        
+        self.events = []
         # Sending the message to the datasender
         message = json.dumps(data)
-        self.dataSender.SendMessage(message)
+        self.dataSender.AddMessage(message)
 
             
 

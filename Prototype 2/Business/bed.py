@@ -1,14 +1,17 @@
 from Business.zone import*
 from Enums.direction import*
 from Enums.toggle import*
+from Enums.event import*
 import time
 import threading
 
 class Bed(Zone):
-    def __init__(self, *args, dormant_time = 2, **kwargs):
+    def __init__(self, *args,  logger, dormant_time = 2, **kwargs):
         super().__init__(*args, **kwargs)
         self.dormant_time = dormant_time
         self.start_time = time.time()
+        self.logger = logger
+        self.isdormant = True
 
     # Sets the bed zone to active.
     def SetActive(self):
@@ -31,12 +34,15 @@ class Bed(Zone):
                     break
                 else:
                     if time.time() - self.start_time > self.dormant_time:
-                        # TO-DO: NOTIFY LOGGING SERVICE ABOUT END TIME
+                        self.logger.RegisterEvent(Event.ENTER_BED)
+                        self.isdormant = True
                         self.ToggleLight(self.ToggleLight(Toggle.OFF))
                         self.nextZone.ToggleLight(Toggle.OFF)
                     time.sleep(0.1)
             else:
-                # TO-DO: IF WAS DORMANT: NOTIFY LOGGING SERVICE ABOUT STARTTIME
+                if (self.isdormant):
+                    self.logger.RegisterEvent(Event.EXIT_BED)
+                self.isdormant = False
                 self.start_time = time.time()
                 self.ToggleLight(Toggle.ON)
                 self.nextZone.ToggleLight(Toggle.ON)
