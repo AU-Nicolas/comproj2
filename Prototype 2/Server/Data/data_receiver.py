@@ -3,10 +3,10 @@ import json
 from Business.db_updater import DBUpdater
 
 
-class DataRetriever:
+class DataReceiver:
     def __init__(self,
                  handleMessageData,
-                ip = "10.73.247.211", 
+                ip = "10.172.107.211", 
                 topic = "toilet_info", 
                 ack_topic = "toilet_info_ack"):
         
