@@ -6,6 +6,7 @@ from Business.toilet import*
 from Business.bed import*
 from Business.zone import*
 from Business.manager import Manager
+from Business.logging_service import LoggingService
 
 # Importing data
 importer = Importer()
@@ -17,8 +18,11 @@ game = GameLoop()
 # Giving the walls to the game
 game.walls = importer.walls
 
-# Creating the controller
+# Creating the manager
 manager = Manager()
+
+# Creating the logging service
+logger = LoggingService()
 
 # Extracting and setting up the bed
 bed_zone = importer.zones[1]
@@ -28,6 +32,9 @@ game.lights.extend(bed_zone.lights)
 lightWriter = LightWriter(bed_zone.lights)
 sensorReader = SensorReader(bed_zone.sensor)
 bed = Bed(sensorReader, lightWriter, manager)
+
+# The logger subscribes to the bed
+bed.publisher.Subscribe(logger)
 
 prevZone = bed
 manager.zones.append(bed)
@@ -68,6 +75,11 @@ sensorReader = SensorReader(toilet_zone.sensor)
 toilet = Toilet(sensorReader, lightWriter, manager, prevZone, prevZone)
 prevZone.nextZone = toilet
 manager.zones.append(toilet)
+
+# The logger subscribes to the toilet
+toilet.publisher.Subscribe(logger)
+
+# Starting the simulation
 bed.SetActive()
 game.run()
 

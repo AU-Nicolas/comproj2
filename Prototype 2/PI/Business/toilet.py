@@ -1,17 +1,18 @@
 from Business.zone import*
 from Enums.direction import*
 from Enums.event import*
+from pubsub import Publisher
 
 class Toilet(Zone):
-    def __init__(self, *args, logger, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.logger = logger
+        self.publisher = Publisher()
         
     def SetActive(self):
         self.ToggleLight(Toggle.ON)
         self.manager.ToggleDirection(Direction.BED)
         self.nextZone.ToggleLight(Toggle.ON)
-        self.logger.RegisterEvent(Event.ENTER_TOILET)  
+        self.publisher.Publish(Event.ENTER_TOILET)  
         self.StartCheckIfActive()
 
     def CheckIfActive(self):
@@ -20,7 +21,7 @@ class Toilet(Zone):
             if (not self.IsOccupied() and self.nextZone.IsOccupied()):
                 self.ToggleLight(Toggle.OFF)
                 self.nextZone.SetActive()
-                self.logger.RegisterEvent(Event.EXIT_TOILET)
+                self.publisher.Publish(Event.EXIT_TOILET)
                 break
             else:
                 time.sleep(0.1)
