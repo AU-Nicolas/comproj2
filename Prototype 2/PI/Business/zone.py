@@ -5,14 +5,13 @@ import threading
 class Zone:
     def __init__(self, sensorReader = None,
                 lightWriter = None,
-                manager = None,
                 prevZone = None,
                 nextZone = None):
         self.sensorReader = sensorReader
         self.lightWriter = lightWriter
         self.prevZone = prevZone
         self.nextZone = nextZone
-        self.manager = manager
+        self.userInBed = True
 
 
     # Returns true if the sensor sees a person in the zone
@@ -24,7 +23,7 @@ class Zone:
         self.lightWriter.setLight(value)
 
     def CheckIfActive(self): 
-        while (not self.manager.inBed):
+        while (not self.userInBed):
             
             if (not self.IsOccupied() and self.nextZone.IsOccupied()):
                 self.ToggleLight(Toggle.OFF)

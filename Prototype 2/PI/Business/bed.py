@@ -16,11 +16,9 @@ class Bed(Zone):
     # Sets the bed zone to active.
     def SetActive(self):
         self.publisher.Publish(Event.ENTER_BED)
-        print("The bed is active")
-        self.manager.TurnOffAllLight()
+        print("BED: The bed is active")
         self.ToggleLight(Toggle.ON)
-        self.manager.ToggleDirection(Direction.TOILET)
-        self.manager.inBed = True
+        
         self.StartCheckIfActive()
 
     def CheckIfActive(self):
@@ -29,7 +27,6 @@ class Bed(Zone):
                 
                 if (self.nextZone.IsOccupied()):
                     self.ToggleLight(Toggle.OFF)
-                    self.manager.inBed = False
                     self.publisher.Publish(Event.EXIT_BED)
                     self.StartCheckBed()
                     self.nextZone.SetActive()
@@ -55,9 +52,8 @@ class Bed(Zone):
         
     # Check if a person is in the bed zone, using isOccupied from sensors
     def CheckBed(self):
-        while(not self.manager.inBed):
+        while(not self.userInBed):
             if(self.IsOccupied()):
-                self.manager.inBed = True
                 self.SetActive()
             else:
                 time.sleep(0.1)

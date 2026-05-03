@@ -9,6 +9,11 @@ class SensorReader:
         self.occupied = False
         self.dormantTime = dormantTime
         self.device_id = device_id
+
+        # Ensuring that no no two threads can alter the same variables simultaneously
+        self.lock = threading.Lock()
+        # Timer meant for tracking dormant time
+        self.timer = None
         
         # Setting up the client
         self.client = mqtt.Client()
@@ -20,24 +25,29 @@ class SensorReader:
 
     # When a message is received
     def onMessage(self, client, userdata, message):
-        print("The sensor sees a message")
+        print("SensorReader: I receive a message")
         # Checking if message has property occupancy
         try:
             payload = json.loads(message.payload.decode())
             occupancy = payload["occupancy"]
         except (KeyError, json.JSONDecodeError):
             return
-        self.cur_message_id += 1
-        # If the sensor detects motion, we set occupied to true
-        if(occupancy):
-            self.occupied = True
-        # If a false reading is detected we start a set false thread
-        else:
-            thread = threading.Thread(
-                target = self.setFalse,
-                daemon = True
-            )
-            thread.start()
+        
+        with self.lock:
+            self.cur_message_id += 1
+            # If the sensor detects motion, we set occupied to true
+            if(occupancy):
+                self.occupied = True
+            # If a false reading is detected we start a set false thread
+            else:
+                # If a timer already exists, it is cancelled
+                if self.timer:
+                    self.timer.cancel()
+                self.timer = threading.Timer(
+                    interval=self.dormantTime,
+                    function=self.SetOccupancyAsFalse
+                )
+                self.timer.start()
     
     # When connecting to the mqtt broker
     def onConnect(self, client, userdata, flags, rc):
@@ -45,7 +55,7 @@ class SensorReader:
             
     # Will wait for timeDormant time. If no new thread has been started,
     # occupied will be set to false
-    def setFalse(self):
+    def setOccupancyAsFalse(self):
         my_message_id = self.cur_message_id
         sleep(self.dormantTime)
         if(my_message_id == self.cur_message_id):

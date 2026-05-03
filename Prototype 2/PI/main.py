@@ -35,10 +35,11 @@ game.lights.extend(bed_zone.lights)
 
 lightWriter = LightWriter(bed_zone.lights)
 sensorReader = SensorReader(bed_zone.sensor)
-bed = Bed(sensorReader, lightWriter, manager)
+bed = Bed(sensorReader, lightWriter)
 
-# The logger subscribes to the bed
+# The logger and manager subscribe to the bed
 bed.publisher.Subscribe(logger)
+bed.publisher.Subscribe(manager)
 
 prevZone = bed
 manager.zones.append(bed)
@@ -58,7 +59,7 @@ while index+1 in importer.zones:
     sensorReader = SensorReader(zone.sensor)
 
     # Setting up business layer
-    zone = Zone(sensorReader, lightWriter, manager)
+    zone = Zone(sensorReader, lightWriter)
     zone.prevZone = prevZone
     prevZone.nextZone = zone
     manager.zones.append(zone)
@@ -76,12 +77,13 @@ game.lights.extend(toilet_zone.lights)
 
 lightWriter = LightWriter(toilet_zone.lights)
 sensorReader = SensorReader(toilet_zone.sensor)
-toilet = Toilet(sensorReader, lightWriter, manager, prevZone, prevZone)
+toilet = Toilet(sensorReader, lightWriter, prevZone, prevZone)
 prevZone.nextZone = toilet
 manager.zones.append(toilet)
 
-# The logger subscribes to the toilet
+# The logger and manager subscribe to the toilet
 toilet.publisher.Subscribe(logger)
+toilet.publisher.Subscribe(manager)
 
 # Starting the simulation
 bed.SetActive()

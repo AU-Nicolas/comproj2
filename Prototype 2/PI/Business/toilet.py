@@ -10,13 +10,12 @@ class Toilet(Zone):
         
     def SetActive(self):
         self.ToggleLight(Toggle.ON)
-        self.manager.ToggleDirection(Direction.BED)
         self.nextZone.ToggleLight(Toggle.ON)
         self.publisher.Publish(Event.ENTER_TOILET)  
         self.StartCheckIfActive()
 
     def CheckIfActive(self):
-        while (not self.manager.inBed):
+        while (not self.userInBed):
             
             if (not self.IsOccupied() and self.nextZone.IsOccupied()):
                 self.ToggleLight(Toggle.OFF)
