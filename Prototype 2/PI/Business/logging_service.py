@@ -126,7 +126,9 @@ class LoggingService(Subscriber):
     def SendData(self, data):
         # If the toilet visit wasn't complete, we include no data about the toilet time
         if (data["completed"] == False):
-            data["on_toilet"], data["to_toilet"], data["to_bed"] = (0,0)
+            data["on_toilet"] = 0
+            data["to_toilet"] = 0
+            data["to_bed"] = 0
         # Events is reset
         self.events = []
         # The data is sent to the datasender
