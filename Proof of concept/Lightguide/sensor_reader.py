@@ -55,7 +55,7 @@ class SensorReader:
             
     # Will wait for timeDormant time. If no new thread has been started,
     # occupied will be set to false
-    def setOccupancyAsFalse(self):
+    def SetOccupancyAsFalse(self):
         my_message_id = self.cur_message_id
         sleep(self.dormantTime)
         if(my_message_id == self.cur_message_id):

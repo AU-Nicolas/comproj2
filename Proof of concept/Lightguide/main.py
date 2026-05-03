@@ -6,7 +6,7 @@ import json
 from datetime import datetime
 
 
-ip = "10.73.247.211"
+ip = "10.172.107.211"
 
 # Creating sensor and light objects
 sensor1 = SensorReader("sensor_1")
