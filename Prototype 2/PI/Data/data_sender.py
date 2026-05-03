@@ -5,9 +5,10 @@ import json
 
 class DataSender:
     def __init__(self, 
-                ip = "10.73.247.211", 
+                ip, 
                 topic = "toilet_info", 
                 ack_topic = "toilet_info_ack"):
+        
         
         # Dictionary of messages that must be sent to the server
         # The start time acts as the key
@@ -35,6 +36,7 @@ class DataSender:
     
     # Function for adding message to message list
     def AddMessage(self, data):
+        print("DataSender: I add a message to my message list")
         # Converting datetime to string for json formatting
         time_id = data["start"].strftime("%Y-%m-%d %H:%M:%S")
         data["start"] = time_id
@@ -44,6 +46,7 @@ class DataSender:
     
     # Function that enables the class to start sending data to the server
     def StartSending(self):
+        print("DataSender: I should start sending messages")
         self.isSending = True
         thread = threading.Thread(
             target = self.SendData,
@@ -58,6 +61,7 @@ class DataSender:
     def SendData(self):
         while(self.isSending):
             for message in self.messages.values():
+                print("DataSender: I sent a message!")
                 self.client.publish(self.topic, message)
             sleep(10)
     

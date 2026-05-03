@@ -7,7 +7,7 @@ class Publisher:
 
     def Publish(self, message):
         for subscriber in self.subscribers:
-            subscriber.receive(message)
+            subscriber.Receive(message)
 
 class Subscriber:
     def Receive(self, message):
