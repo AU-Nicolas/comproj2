@@ -23,7 +23,7 @@ game.walls = importer.walls
 manager = Manager()
 
 # Creating object for sending data to server
-dataSender = DataSender("10.172.107.211")
+dataSender = DataSender("localhost")
 
 # Creating the logging service
 logger = LoggingService(dataSender)

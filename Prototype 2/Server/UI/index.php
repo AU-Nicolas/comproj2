@@ -18,6 +18,13 @@
     return 'ASC'; // default when switching column
     }
 
+    function formatTime($seconds) {
+        $minutes = floor($seconds / 60);
+        $secs = $seconds % 60;
+
+        return sprintf("%d:%02d", $minutes, $secs);
+    }
+
     //main data query
     $tableResult = $conn->query("SELECT * FROM toilet_visits ORDER BY $sort $order");
 
@@ -60,11 +67,11 @@ if ($tableResult->num_rows > 0) {
         echo "<tr>";
         echo "<td>" . htmlspecialchars($row["id"]) . "</td>";
         echo "<td>" . htmlspecialchars($row["start"]) . "</td>";
-        echo "<td>" . htmlspecialchars($row["total_time"]) . "</td>";
+        echo "<td>" . htmlspecialchars(formatTime($row["total_time"])) . "</td>";
         echo "<td>" . htmlspecialchars($row["completed"]) . "</td>";
-        echo "<td>" . htmlspecialchars($row["to_toilet"]) . "</td>";
-        echo "<td>" . htmlspecialchars($row["on_toilet"]) . "</td>";
-        echo "<td>" . htmlspecialchars($row["to_bed"]) . "</td>";
+        echo "<td>" . htmlspecialchars(formatTime($row["to_toilet"])) . "</td>";
+        echo "<td>" . htmlspecialchars(formatTime($row["on_toilet"])) . "</td>";
+        echo "<td>" . htmlspecialchars(formatTime($row["to_bed"])) . "</td>";
         echo "</tr>";
     }
 }
