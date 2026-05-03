@@ -65,4 +65,3 @@ class DBWriter:
               VALUES (%s, %s, %s, %s, %s, %s)"
         self.db.cursor().execute(sql, (start, total_time, completed, to_toilet, on_toilet, to_bed))
         self.db.commit()
-
