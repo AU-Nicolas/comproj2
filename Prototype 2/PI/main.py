@@ -7,6 +7,7 @@ from Business.bed import*
 from Business.zone import*
 from Business.manager import Manager
 from Business.logging_service import LoggingService
+from Data.data_sender import DataSender
 
 # Importing data
 importer = Importer()
@@ -21,8 +22,11 @@ game.walls = importer.walls
 # Creating the manager
 manager = Manager()
 
+# Creating object for sending data to server
+dataSender = DataSender("10.172.107.211")
+
 # Creating the logging service
-logger = LoggingService()
+logger = LoggingService(dataSender)
 
 # Extracting and setting up the bed
 bed_zone = importer.zones[1]

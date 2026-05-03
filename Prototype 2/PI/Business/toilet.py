@@ -1,7 +1,7 @@
 from Business.zone import*
 from Enums.direction import*
 from Enums.event import*
-from pubsub import Publisher
+from Business.pubsub import Publisher
 
 class Toilet(Zone):
     def __init__(self, *args, **kwargs):

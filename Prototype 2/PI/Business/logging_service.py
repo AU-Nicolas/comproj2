@@ -2,8 +2,7 @@ from Enums.event import*
 from datetime import datetime
 import threading
 import json
-from pubsub import Subscriber
-from Data.data_sender import DataSender
+from Business.pubsub import Subscriber
 
 class EventTime:
     def __init__(self, type, time):
@@ -12,24 +11,28 @@ class EventTime:
 
 # Inherits from subscriber - will subscribe to bed and toilet
 class LoggingService(Subscriber):
-    def __init__(self):
+    def __init__(self, dataSender):
         self.events = []
         self.lock = threading.Lock()
-        self.dataSender = DataSender()
+        self.dataSender = dataSender
+        self.dataSender.StartSending()
     
     # What happens when a message is received from a publisher
     def Receive(self, event_type):
         # Ensures that only one instance of register event is running
         with self.lock:
+            print(f"LoggingService: I receive a publish: {event_type}")
             # Registering the given event
             event = EventTime(event_type, datetime.now())
             self.events.append(event)
             # If the resident enters the bed, we flush all stored events
-            if(event == Event.ENTER_BED):
+            if(event_type == Event.ENTER_BED):
+                print("LoggingService: I really should run this, huh")
                 self.FlushEvents()
     
 
     def FlushEvents(self):
+        print("LoggingService: I start to flush events")
         # The data that will be sent
         data = {"start": "", 
                 "total_time": 0,
@@ -38,7 +41,7 @@ class LoggingService(Subscriber):
                 "on_toilet": 0,
                 "to_bed": 0}
         
-        starttime, endtime = None
+        # starttime, endtime = None
         
         # Checks if the first event is in fact exit bed
         if (self.events[0].type == Event.EXIT_BED):
