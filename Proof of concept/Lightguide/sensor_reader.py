@@ -32,22 +32,21 @@ class SensorReader:
             occupancy = payload["occupancy"]
         except (KeyError, json.JSONDecodeError):
             return
-        
-        with self.lock:
-            self.cur_message_id += 1
-            # If the sensor detects motion, we set occupied to true
-            if(occupancy):
-                self.occupied = True
-            # If a false reading is detected we start a set false thread
-            else:
-                # If a timer already exists, it is cancelled
-                if self.timer:
-                    self.timer.cancel()
-                self.timer = threading.Timer(
-                    interval=self.dormantTime,
-                    function=self.SetOccupancyAsFalse
-                )
-                self.timer.start()
+
+        self.cur_message_id += 1
+        # If the sensor detects motion, we set occupied to true
+        if(occupancy):
+            self.occupied = True
+        # If a false reading is detected we start a set false thread
+        else:
+            # If a timer already exists, it is cancelled
+            if self.timer:
+                self.timer.cancel()
+            self.timer = threading.Timer(
+                interval=self.dormantTime,
+                function=self.SetOccupancyAsFalse
+            )
+            self.timer.start()
     
     # When connecting to the mqtt broker
     def onConnect(self, client, userdata, flags, rc):
