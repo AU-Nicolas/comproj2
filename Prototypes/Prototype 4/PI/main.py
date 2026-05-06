@@ -90,7 +90,7 @@ toilet.publisher.Subscribe(logger)
 toilet.publisher.Subscribe(manager)
 
 # Creating the scheduler for stopping the program
-scheduler = Scheduler(TimeStamp(20,7), manager, logger)
+scheduler = Scheduler(TimeStamp(12,30,30), manager, logger)
 scheduler.StartSystem()
 game.run()
 
