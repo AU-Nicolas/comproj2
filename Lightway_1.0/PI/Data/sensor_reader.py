@@ -4,7 +4,7 @@ import threading
 import json
 
 class SensorReader:
-    def __init__(self, device_id, dormantTime = 4):
+    def __init__(self, device_id, dormantTime = 2):
         self.cur_message_id = 0
         self.occupied = False
         self.dormantTime = dormantTime

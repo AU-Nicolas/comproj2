@@ -18,7 +18,7 @@ with open("/home/lightway/Desktop/comproj2/Lightway_1.0/PI/logfile.txt", "a") as
 manager = Manager()
 
 # Creating object for sending data to server
-dataSender = DataSender("localhost")
+dataSender = DataSender("172.18.157.211")
 
 # Creating the logging service
 logger = LoggingService(dataSender)
@@ -26,7 +26,7 @@ logger = LoggingService(dataSender)
 
 
 lightWriter = LightWriter("light_bed")
-sensorReader = SensorReader("sensor_bed")
+sensorReader = SensorReader("bed_sensor")
 bed = Bed(sensorReader, lightWriter, dormant_time=4)
 
 # Giving the bed to the manager
@@ -40,12 +40,12 @@ prevZone = bed
 manager.zones.append(bed)
 
 # Iterating over all normal zones
-for i in range(1,2):
+for i in range(1,3):
 
 
     # Setting up data layer
     lightWriter = LightWriter(f"light_{i}")
-    sensorReader = SensorReader(f"sensor_{i}")
+    sensorReader = SensorReader(f"{i}_sensor")
 
     # Setting up business layer
     zone = Zone(sensorReader, lightWriter)
@@ -59,7 +59,7 @@ bed.prevZone = bed.nextZone
 
 
 lightWriter = LightWriter("light_toilet")
-sensorReader = SensorReader("sensor_toilet")
+sensorReader = SensorReader("toilet_sensor")
 toilet = Toilet(sensorReader, lightWriter, prevZone, prevZone)
 prevZone.nextZone = toilet
 manager.zones.append(toilet)
