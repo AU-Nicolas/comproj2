@@ -26,7 +26,7 @@ logger = LoggingService(dataSender)
 
 
 lightWriter = LightWriter("light_bed")
-sensorReader = SensorReader("bed_sensor")
+sensorReader = SensorReader("sensor_bed")
 bed = Bed(sensorReader, lightWriter, dormant_time=4)
 
 # Giving the bed to the manager
@@ -45,7 +45,7 @@ for i in range(1,3):
 
     # Setting up data layer
     lightWriter = LightWriter(f"light_{i}")
-    sensorReader = SensorReader(f"{i}_sensor")
+    sensorReader = SensorReader(f"sensor_{i}")
 
     # Setting up business layer
     zone = Zone(sensorReader, lightWriter)
@@ -59,7 +59,7 @@ bed.prevZone = bed.nextZone
 
 
 lightWriter = LightWriter("light_toilet")
-sensorReader = SensorReader("toilet_sensor")
+sensorReader = SensorReader("sensor_toilet")
 toilet = Toilet(sensorReader, lightWriter, prevZone, prevZone)
 prevZone.nextZone = toilet
 manager.zones.append(toilet)
@@ -69,7 +69,7 @@ toilet.publisher.Subscribe(logger)
 toilet.publisher.Subscribe(manager)
 
 # Creating the scheduler for stopping the program
-scheduler = Scheduler(TimeStamp(17,2), manager, logger)
+scheduler = Scheduler(TimeStamp(7, 10), manager, logger)
 scheduler.StartSystem()
 
 while(scheduler.systemIsActive):
