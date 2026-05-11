@@ -36,6 +36,7 @@ class Zone:
                 break
             else:
                 time.sleep(0.1)
+        self.ToggleLight("OFF")
 
 
 

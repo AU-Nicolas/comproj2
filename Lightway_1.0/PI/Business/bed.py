@@ -17,6 +17,7 @@ class Bed(Zone):
         print("Bed: I run SetActive")
         self.publisher.Publish(Event.ENTER_BED)
         self.ToggleLight("ON")
+        self.nextZone.ToggleLight("ON")
         
         self.StartCheckIfActive()
 
@@ -40,6 +41,8 @@ class Bed(Zone):
                 self.ToggleLight("ON")
                 self.nextZone.ToggleLight("ON")
                 time.sleep(0.1)
+
+        self.ToggleLight("OFF")
         
 
     def StartCheckBed(self):
