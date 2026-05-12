@@ -10,9 +10,6 @@ from Business.scheduler import*
 from datetime import datetime
 from time import sleep
 
-with open("/home/lightway/Desktop/comproj2/Lightway_1.0/PI/logfile.txt", "a") as f:
-    f.write(f"I logged at {datetime.now()}\n")
-    f.close()
 
 # Creating the manager
 manager = Manager()

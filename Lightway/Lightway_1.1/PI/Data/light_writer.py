@@ -5,15 +5,26 @@ import json
 
 
 class LightWriter:
-    def __init__(self, device_id):
+    def __init__(self, device_id, changeTime = 0.4):
+        # Setting up mqtt client
         self.device_id = device_id
         self.client = mqtt.Client()
         self.client.connect("localhost", 1883, 60)
+
+        # Time before the light accepts a change
+        self.changeTime = changeTime
+        
+        # Mutex lock to prevent race conditions
+        self.lock = threading.Lock()
+        self.timer = None
+        
         # What is the belief of the current light state?
         self.settingToValue = Toggle.ON
+        
         # Setting the light to off initially
         self.SetLight(Toggle.OFF)
         self.client.loop_start()
+        
 
     def SetLight(self, value):
         # Ensuring only one instance can run
@@ -46,7 +57,7 @@ class LightWriter:
             
             # The light is changed
             self.client.publish(topic=f"zigbee2mqtt/{self.device_id}/set",
-                                payload=json.dumps({"state": f"{value}"}))
+                                payload=json.dumps({"state": f"{value.value}"}))
 
     def ShutDown(self):
         print("LightWriter: Is shutting down")
