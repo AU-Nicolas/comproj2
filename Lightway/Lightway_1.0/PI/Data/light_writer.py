@@ -16,7 +16,6 @@ class LightWriter:
 
     def setLight(self, value):
         if(self.lightStatus != value):
-            print("LightWriter: I try to change the light")
             self.client.publish(topic=f"zigbee2mqtt/{self.device_id}/set",
                                 payload=json.dumps({"state": f"{value}"}))
             self.lightStatus = value

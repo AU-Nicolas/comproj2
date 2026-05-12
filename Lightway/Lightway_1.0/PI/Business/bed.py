@@ -33,7 +33,7 @@ class Bed(Zone):
                     break
                 else:
                     if time.time() - self.start_time > self.dormant_time:
-                        self.ToggleLight(self.ToggleLight("OFF"))
+                        self.ToggleLight("OFF")
                         self.nextZone.ToggleLight("OFF")
                     time.sleep(0.1)
             else:
@@ -42,7 +42,7 @@ class Bed(Zone):
                 self.nextZone.ToggleLight("ON")
                 time.sleep(0.1)
 
-        self.ToggleLight("OFF")
+
         
 
     def StartCheckBed(self):

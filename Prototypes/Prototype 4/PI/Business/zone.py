@@ -1,6 +1,6 @@
-from Enums.toggle import*
 import time
 import threading
+from Enums.toggle import*
 
 class Zone:
     def __init__(self, sensorReader = None,
@@ -27,16 +27,20 @@ class Zone:
 
     # Sets the light to ON or OFF
     def ToggleLight(self, value):
-        self.lightWriter.setLight(value)
+        self.lightWriter.SetLight(value)
 
     def CheckIfActive(self): 
         while (not self.userInBed and self.systemIsActive):
             if (not self.IsOccupied() and self.nextZone.IsOccupied()):
                 self.ToggleLight(Toggle.OFF)
                 self.nextZone.SetActive()
-                break
+                return
             else:
+                self.ToggleLight(Toggle.ON)
+                self.nextZone.ToggleLight(Toggle.ON)
                 time.sleep(0.1)
+        self.ToggleLight(Toggle.OFF)
+        self.nextZone.ToggleLight(Toggle.OFF)
 
 
 
@@ -50,8 +54,6 @@ class Zone:
 
     # Function called when a zone becomes active
     def SetActive(self):
-        self.ToggleLight(Toggle.ON)
-        self.nextZone.ToggleLight(Toggle.ON)
         self.StartCheckIfActive()
     
     
