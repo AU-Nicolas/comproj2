@@ -29,12 +29,16 @@ class Zone:
     def ToggleLight(self, value):
         self.lightWriter.SetLight(value)
 
-    def CheckIfActive(self): 
+    def WhileActive(self): 
         while (not self.userInBed and self.systemIsActive):
+            # If movement is seen in the next zone, and no movement is seen
+            # in the current zone, the next zone is set as the active zone
             if (not self.IsOccupied() and self.nextZone.IsOccupied()):
                 self.ToggleLight(Toggle.OFF)
                 self.nextZone.SetActive()
                 return
+            # If movement is seen in the current zone, we stay here, and keep
+            # the light on
             else:
                 self.ToggleLight(Toggle.ON)
                 self.nextZone.ToggleLight(Toggle.ON)
@@ -47,7 +51,7 @@ class Zone:
     # Starts CheckIfActive as a thread
     def StartCheckIfActive(self):
         thread = threading.Thread(
-            target = self.CheckIfActive,
+            target = self.WhileActive,
             daemon = True
         )
         thread.start()

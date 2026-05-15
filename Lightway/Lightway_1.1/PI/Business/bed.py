@@ -17,14 +17,14 @@ class Bed(Zone):
     def SetActive(self):
         print("Bed: I run SetActive")
         self.publisher.Publish(Event.ENTER_BED)
-        
-        
         self.StartCheckIfActive()
 
-    def CheckIfActive(self):
+    def WhileActive(self):
         while (self.systemIsActive):
+            # If no movement is seen inside the bed zone
             if (not self.IsOccupied()):
-                
+                # If the beboer has moved to the next zone, that
+                # zone is set as active
                 if (self.nextZone.IsOccupied()):
                     self.ToggleLight(Toggle.OFF)
                     self.publisher.Publish(Event.EXIT_BED)
@@ -32,16 +32,21 @@ class Bed(Zone):
                     self.nextZone.SetActive()
                     return
                 else:
+                    # If no movement is seen anywhere, all light is turned off
                     if time.time() - self.start_time > self.dormant_time:
                         self.ToggleLight(Toggle.OFF)
                         self.nextZone.ToggleLight(Toggle.OFF)
                     time.sleep(0.1)
+            # If we do see movement in the bed zone, we stay here and keep the
+            # light on
             else:
                 self.start_time = time.time()
                 self.ToggleLight(Toggle.ON)
                 self.nextZone.ToggleLight(Toggle.ON)
                 time.sleep(0.1)
 
+        # We make sure to turn off all the light, when the loop condition is broken,
+        # i.e. the system is not active anymore
         self.ToggleLight(Toggle.OFF)
         self.nextZone.ToggleLight(Toggle.OFF)
         
@@ -57,6 +62,8 @@ class Bed(Zone):
     def CheckBed(self):
         print("Bed: I run checkBed")
         while(not self.userInBed and self.systemIsActive):
+            # If we see movement in the bedroom, we assume the beboer has moved
+            # back to the bedroom
             if(self.IsOccupied()):
                 self.SetActive()
             else:

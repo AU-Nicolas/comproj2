@@ -13,9 +13,10 @@ class Toilet(Zone):
         self.publisher.Publish(Event.ENTER_TOILET)  
         self.StartCheckIfActive()
 
-    def CheckIfActive(self):
+    # This has the same functionality as in zone, execpt we publish that 
+    # we enter the toilet
+    def WhileActive(self):
         while (not self.userInBed and self.systemIsActive):
-            
             if (not self.IsOccupied() and self.nextZone.IsOccupied()):
                 self.ToggleLight(Toggle.OFF)
                 self.publisher.Publish(Event.EXIT_TOILET)
