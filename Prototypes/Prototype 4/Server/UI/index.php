@@ -71,7 +71,7 @@
 <?php
 if ($tableResult->num_rows > 0) {
     while ($row = $tableResult->fetch_assoc()) {
-        $isLong = $row['total_time'] > 600; // flag visits over 10 min
+        $isLong = $row['total_time'] > 600 || $row['on_toilet'] > 600; // flag visits over 10 min
         echo "<tr>";
         echo "<td>#" . htmlspecialchars($row["id"]) . "</td>";
         echo "<td>" . date("d M Y H:i", strtotime($row["start"])) . "</td>";
@@ -80,7 +80,8 @@ if ($tableResult->num_rows > 0) {
         $done = $row["completed"] ? '<span class="completed">✓ Yes</span>' : '<span class="incomplete">✗ No</span>';
         echo "<td>$done</td>";
         echo "<td>" . formatTime($row["to_toilet"]) . "</td>";
-        echo "<td>" . formatTime($row["on_toilet"]) . "</td>";
+        $tdClass = ($isLong && $row['on_toilet'] > 600) ? ' class="long-visit"' : '';
+        echo "<td$tdClass>" . formatTime($row["on_toilet"]) . "</td>";
         echo "<td>" . formatTime($row["to_bed"]) . "</td>";
         echo "</tr>";
     }
