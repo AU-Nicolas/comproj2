@@ -1,7 +1,7 @@
 from Business.zone import*
 from Enums.direction import*
-from Enums.toggle import*
 from Enums.event import*
+from Enums.toggle import*
 import time
 import threading
 from Business.pubsub import Publisher
@@ -17,7 +17,7 @@ class Bed(Zone):
     def SetActive(self):
         print("Bed: I run SetActive")
         self.publisher.Publish(Event.ENTER_BED)
-        self.ToggleLight(Toggle.ON)
+        
         
         self.StartCheckIfActive()
 
@@ -30,10 +30,10 @@ class Bed(Zone):
                     self.publisher.Publish(Event.EXIT_BED)
                     self.StartCheckBed()
                     self.nextZone.SetActive()
-                    break
+                    return
                 else:
                     if time.time() - self.start_time > self.dormant_time:
-                        self.ToggleLight(self.ToggleLight(Toggle.OFF))
+                        self.ToggleLight(Toggle.OFF)
                         self.nextZone.ToggleLight(Toggle.OFF)
                     time.sleep(0.1)
             else:
@@ -41,6 +41,9 @@ class Bed(Zone):
                 self.ToggleLight(Toggle.ON)
                 self.nextZone.ToggleLight(Toggle.ON)
                 time.sleep(0.1)
+
+        self.ToggleLight(Toggle.OFF)
+        self.nextZone.ToggleLight(Toggle.OFF)
         
 
     def StartCheckBed(self):

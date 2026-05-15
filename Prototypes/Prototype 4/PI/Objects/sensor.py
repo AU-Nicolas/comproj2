@@ -34,8 +34,12 @@ class Sensor:
         pygame.draw.rect(surface, self.box_color, self.box)
         pygame.draw.polygon(surface, self.light_color, self.body)
     
-    def setOccupancy(self, object):
-        self.isOccupied = collideRectPolygon(object, self.body)
+    def setOccupancy(self, *objects):
+        occupancy = False
+        for object in objects:
+            if collideRectPolygon(object, self.body):
+                occupancy = True
+        self.isOccupied = occupancy
 
 
 
