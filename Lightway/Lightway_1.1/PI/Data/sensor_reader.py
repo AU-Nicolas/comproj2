@@ -7,7 +7,7 @@ class SensorReader:
     def __init__(self, device_id, dormantTime = 2):
         self.cur_message_id = 0
         self.occupied = False
-        self.dormantTime = dormantTime
+        self.dormant_time = dormantTime
         self.device_id = device_id
 
         # Ensuring that no no two threads can alter the same variables simultaneously
@@ -18,7 +18,7 @@ class SensorReader:
         # Setting up the client
         self.client = mqtt.Client()
         self.client.on_message = self.OnSensorReading
-        self.client.on_connect = self.onConnect
+        self.client.on_connect = self.OnConnect
         self.client.connect("localhost", 1883, 60)
         
         self.client.loop_start()
@@ -43,20 +43,20 @@ class SensorReader:
             if self.timer:
                 self.timer.cancel()
             self.timer = threading.Timer(
-                interval=self.dormantTime,
+                interval=self.dormant_time,
                 function=self.SetOccupancyAsFalse
             )
             self.timer.start()
     
     # When connecting to the mqtt broker
-    def onConnect(self, client, userdata, flags, rc):
+    def OnConnect(self, client, userdata, flags, rc):
         client.subscribe(f"zigbee2mqtt/{self.device_id}")
             
     # Will wait for timeDormant time. If no new thread has been started,
     # occupied will be set to false
     def SetOccupancyAsFalse(self):
         my_message_id = self.cur_message_id
-        sleep(self.dormantTime)
+        sleep(self.dormant_time)
         if(my_message_id == self.cur_message_id):
             self.occupied = False
 

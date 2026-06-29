@@ -11,7 +11,7 @@ class Toilet(Zone):
         
     def SetActive(self):
         self.publisher.Publish(Event.ENTER_TOILET)  
-        self.StartCheckIfActive()
+        self.StartWhileActive()
 
     # This has the same functionality as in zone, execpt we publish that 
     # we enter the toilet

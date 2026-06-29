@@ -5,14 +5,14 @@ import json
 
 
 class LightWriter:
-    def __init__(self, device_id, changeTime = 0.4):
+    def __init__(self, device_id, changeDuration = 0.4):
         # Setting up mqtt client
         self.device_id = device_id
         self.client = mqtt.Client()
         self.client.connect("localhost", 1883, 60)
 
         # Time before the light accepts a change
-        self.changeTime = changeTime
+        self.changeTime = changeDuration
         
         # Mutex lock to prevent race conditions
         self.lock = threading.Lock()
@@ -43,12 +43,12 @@ class LightWriter:
             # We will now change the light in self.changeTime time
             self.timer = threading.Timer(
                 interval=self.changeTime,
-                function=self.ChangeLight,
+                function=self.ActuallyChangeLight,
                 args=(value,)
             )
             self.timer.start()
 
-    def ChangeLight(self, value):
+    def ActuallyChangeLight(self, value):
         with self.lock:
             # Returns if we somehow are setting to some value different than
             # the most recently desired one

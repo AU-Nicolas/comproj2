@@ -48,8 +48,8 @@ class Zone:
 
 
 
-    # Starts CheckIfActive as a thread
-    def StartCheckIfActive(self):
+    # Starts WhileActive as a thread
+    def StartWhileActive(self):
         thread = threading.Thread(
             target = self.WhileActive,
             daemon = True
@@ -58,7 +58,7 @@ class Zone:
 
     # Function called when a zone becomes active
     def SetActive(self):
-        self.StartCheckIfActive()
+        self.StartWhileActive()
     
     
 

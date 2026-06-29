@@ -16,7 +16,7 @@ class Scheduler:
         self.endTime = None
         self.SetEndTime(endTime)
         self.manager = manager
-        self.loggingService = loggingService
+        self.logger = loggingService
         self.systemIsActive = False
 
     # Setting the time for when the scheduler should shut the system down
@@ -38,7 +38,7 @@ class Scheduler:
         self.systemIsActive = True
         # Starting up the manager and logging service
         self.manager.StartUp()
-        self.loggingService.StartUp()
+        self.logger.StartUp()
 
         # Starting CheckTime as a thread
         thread = threading.Thread(
@@ -51,7 +51,7 @@ class Scheduler:
     def ShutDownSystem(self):
         self.systemIsActive = False
         self.manager.ShutDown()
-        self.loggingService.ShutDown()
+        self.logger.ShutDown()
         
     def CheckTime(self):
         while(True):

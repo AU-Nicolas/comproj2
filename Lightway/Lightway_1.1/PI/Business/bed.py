@@ -7,7 +7,7 @@ import threading
 from Business.pubsub import Publisher
 
 class Bed(Zone):
-    def __init__(self, *args, dormant_time = 2, **kwargs):
+    def __init__(self, *args, dormant_time = 30, **kwargs):
         super().__init__(*args, **kwargs)
         self.dormant_time = dormant_time
         self.start_time = time.time()
@@ -17,7 +17,7 @@ class Bed(Zone):
     def SetActive(self):
         print("Bed: I run SetActive")
         self.publisher.Publish(Event.ENTER_BED)
-        self.StartCheckIfActive()
+        self.StartWhileActive()
 
     def WhileActive(self):
         while (self.systemIsActive):
