@@ -46,8 +46,6 @@ class Zone:
         self.ToggleLight(Toggle.OFF)
         self.nextZone.ToggleLight(Toggle.OFF)
 
-
-
     # Starts WhileActive as a thread
     def StartWhileActive(self):
         thread = threading.Thread(
